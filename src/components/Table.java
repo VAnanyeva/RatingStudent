@@ -5,10 +5,12 @@
  */
 package components;
 
+import javax.swing.JTable;
+
 /**
  *
  * @author ВИКА
  */
-public class Table {
+public class Table extends JTable {
     
 }
