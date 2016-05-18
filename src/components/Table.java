@@ -12,5 +12,7 @@ import javax.swing.JTable;
  * @author ВИКА
  */
 public class Table extends JTable {
-    
+    public Table(){
+        
+    }
 }
