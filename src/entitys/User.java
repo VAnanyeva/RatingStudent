@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author Victoria
  */
 public class User {
-    private int usr_id;
+    public static int usr_id;
     private String fio;
     private String login;
     private boolean admin;

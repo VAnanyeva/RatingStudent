@@ -9,6 +9,7 @@ import components.Link;
 import components.DisciplinePanel;
 import entitys.User;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -54,6 +55,7 @@ public class MainForm extends JFrame{
         
         JPanel pnlWest = new JPanel();
         pnlWest.setLayout(new BoxLayout(pnlWest, BoxLayout.Y_AXIS));
+        pnlWest.setPreferredSize(new Dimension (150,100));
         Link linkDisc = new Link("/img/Admin.png","Дисциплины");
         Link linkTask = new Link("/img/Admin.png","Задачи");
         Link linkJornal = new Link("/img/Admin.png","Журнал");
@@ -68,6 +70,7 @@ public class MainForm extends JFrame{
         JPanel pnlEast = new JPanel();
         DisciplinePanel pnlDiscipline = new DisciplinePanel();
         pnlEast.add(pnlDiscipline);
+        //pnlEast.setPreferredSize(new Dimension(1000,700));
         panel.add(pnlEast, BorderLayout.EAST);
         
         

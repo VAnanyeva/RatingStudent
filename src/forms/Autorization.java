@@ -34,6 +34,16 @@ public class Autorization extends JFrame{
     
     public Autorization(){
         super();
+        init();
+        
+    }
+    
+    private void check(String login, char[] password){
+        this.setVisible(false);
+        MainForm mainForm = new MainForm(1);
+    }
+
+    private void init() {
         this.setTitle("Авторизация");
         DataBase.conn();
         JPanel panel = new JPanel();
@@ -68,11 +78,6 @@ public class Autorization extends JFrame{
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.add(panel);
-    }
-    
-    private void check(String login, char[] password){
-        this.setVisible(false);
-        MainForm mainForm = new MainForm(1);
     }
 
 }
