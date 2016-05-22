@@ -6,19 +6,23 @@
 package forms;
 
 import db.DataBase;
+import static db.DataBase.statement;
+import db.Loader;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -39,8 +43,28 @@ public class Autorization extends JFrame{
     }
     
     private void check(String login, char[] password){
-        this.setVisible(false);
-        MainForm mainForm = new MainForm(1);
+        int usr_id = -1;
+        char[] pass = null;
+        try {
+            ResultSet rs = statement.executeQuery("SELECT USER_ID,PASSWORD FROM USER WHERE LOGIN = '" + login+"'");
+ 
+            while (rs.next()){
+               usr_id = rs.getInt("USER_ID");
+               Object c = rs.getObject("PASSWORD");
+               pass = c.toString().toCharArray();
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Loader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if ((usr_id != -1)&&(Arrays.toString(pass).equals(Arrays.toString(password)))){
+            this.setVisible(false);
+            MainForm mainForm = new MainForm(usr_id);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Неверный пароль!");
+        }
     }
 
     private void init() {
@@ -79,5 +103,8 @@ public class Autorization extends JFrame{
         this.setLocationRelativeTo(null);
         this.add(panel);
     }
+    
+
+
 
 }

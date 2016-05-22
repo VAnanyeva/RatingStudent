@@ -5,41 +5,56 @@
  */
 package components;
 
-
 import db.Loader;
 import entitys.User;
 import forms.Dialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.TreeMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import javax.swing.border.TitledBorder;
-
 
 /**
  *
- * @author Victoria
+ * @author ВИКА
  */
-public class DisciplinePanel extends JPanel implements TableInterface{
+public class TaskPanel extends JPanel implements TableInterface {
     private final Loader loader = new Loader();
     private Table table;
     private Object[][] inData = new Object[][] {{"1","2","3"},{"4","5","6"},{"7","8","9"}};
-    private final Object[] columnNames = new Object[] {"№","Наименование дисциплины","Количество часов"};
+    private final Object[] columnNames = new Object[] {"№","Наименование задачи","Описание"};
     private Dialog addDialog;
+    private ComboBox cbxDis;
+    private TreeMap<Integer,String> disciplines = new TreeMap<>();
 
-    public DisciplinePanel (){
+    public TaskPanel (){
         init();
     }
 
     private void init() {
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setBorder(new TitledBorder("Дисциплины"));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(new TitledBorder("Задачи"));
+        
+        disciplines = loader.getMapForComboBox("select dis_id as id,name_dis as text from discipline where user_id = "+User.usr_id);
+        cbxDis = new ComboBox(disciplines,"Дисциплины");
+        cbxDis.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent evt)
+            {
+                inData = getDataFromBase();
+                table.refresh(inData);
+            }
+        });
         inData = getDataFromBase();
         table = new Table(inData,columnNames);
 
+        this.add(cbxDis);
         this.add(table);
         
         MiniButton btnUpdate = new MiniButton("/img/update.png"); 
@@ -64,7 +79,7 @@ public class DisciplinePanel extends JPanel implements TableInterface{
         btnDel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                loader.deleteDiscipline(Integer.parseInt(table.getValueAt(table.getSelectedRow(),0).toString()));
+                loader.deleteTask(Integer.parseInt(table.getValueAt(table.getSelectedRow(),0).toString()));
                 inData = getDataFromBase();
                 table.refresh(inData); 
             }
@@ -76,27 +91,27 @@ public class DisciplinePanel extends JPanel implements TableInterface{
     
     @Override
     public Object[][] getDataFromBase(){
-        return loader.getDataFromBase("select dis_id,name_dis,num_hours from discipline where user_id = " + User.usr_id, new String[]{"dis_id","name_dis","num_hours"});
+        return loader.getDataFromBase("select task_id,name_task,descr from task where dis_id = " + cbxDis.getSelectedId(), 
+                                      new String[]{"task_id","name_task","descr"});
     }
-
     
     private void initAddDialog(){
         JTextField txfName = new JTextField();
-        JTextField txfHours = new JTextField();
+        JTextField txfDescr = new JTextField();
         txfName.setBorder(new TitledBorder("Наименование"));
-        txfHours.setBorder(new TitledBorder("Количество часов"));        
-        addDialog = new Dialog("Добавить дисциплину",400,150){
+        txfDescr.setBorder(new TitledBorder("Описание задачи"));        
+        addDialog = new Dialog("Добавить задачу",400,150){
              @Override
              public void Ok(){
-                 int maxInd = loader.getMaxInd("select count(*) as CNT from discipline");
-                 loader.insertDistipline(maxInd+1,txfName.getText(), Integer.parseInt(txfHours.getText()));
+                 int maxInd = loader.getMaxInd("select count(*) as CNT from task");
+                 loader.insertTask(maxInd+1,txfName.getText(), txfDescr.getText(),cbxDis.getSelectedId());
                  inData = getDataFromBase();
                  table.refresh(inData);  
                  addDialog.dispose();
              }
         };
         addDialog.addComponent(txfName);
-        addDialog.addComponent(txfHours);
+        addDialog.addComponent(txfDescr);
         addDialog.addComponent(Box.createVerticalGlue());
     }
     

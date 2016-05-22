@@ -7,9 +7,14 @@ package forms;
 
 import components.Link;
 import components.DisciplinePanel;
+import components.JournalPanel;
+import components.RatingPanel;
+import components.TaskPanel;
 import entitys.User;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -23,6 +28,10 @@ import javax.swing.JPanel;
  */
 public class MainForm extends JFrame{
     private int usr_id = -1;
+    private DisciplinePanel pnlDiscipline;
+    private TaskPanel pnlTask;
+    private JournalPanel pnlJournal;
+    private RatingPanel pnlRating;
     
     public MainForm(){
         init();
@@ -40,26 +49,63 @@ public class MainForm extends JFrame{
         JPanel pnlNorth = new JPanel();
         pnlNorth.setLayout(new BoxLayout(pnlNorth, BoxLayout.X_AXIS));
         JLabel lblUser = new JLabel();
-        if (user.isAdmin()){
-            lblUser.setIcon(new ImageIcon(getClass().getResource("/img/Admin.png"))); 
-        }
-        else{
-            lblUser.setIcon(new ImageIcon(getClass().getResource("/img/teacher.png"))); 
-        }
+        lblUser.setIcon(new ImageIcon(getClass().getResource("/img/teacher.png"))); 
+  
         
         JLabel lblFio = new JLabel();
         lblFio.setText("Пользователь: " + user.getFIO());
         pnlNorth.add(lblUser);
         pnlNorth.add(lblFio);
         panel.add(pnlNorth, BorderLayout.NORTH);
-        
+        JPanel pnlEast = new JPanel();
         JPanel pnlWest = new JPanel();
         pnlWest.setLayout(new BoxLayout(pnlWest, BoxLayout.Y_AXIS));
         pnlWest.setPreferredSize(new Dimension (150,100));
-        Link linkDisc = new Link("/img/Admin.png","Дисциплины");
-        Link linkTask = new Link("/img/Admin.png","Задачи");
-        Link linkJornal = new Link("/img/Admin.png","Журнал");
-        Link linkRating = new Link("/img/Admin.png","Рейтинг");
+        Link linkDisc = new Link("discipline","Дисциплины");
+        linkDisc.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                 pnlEast.removeAll();
+                 pnlDiscipline = new DisciplinePanel();
+                 pnlEast.add(pnlDiscipline);
+                 pnlEast.repaint();
+                 pnlEast.revalidate();
+            }
+        });
+        Link linkTask = new Link("task","Задачи");
+        linkTask.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                 pnlEast.removeAll();
+                 pnlTask = new TaskPanel();
+                 pnlEast.add(pnlTask);
+                 pnlEast.repaint();
+                 pnlEast.revalidate();
+            }
+        });
+        Link linkJornal = new Link("journal","Журнал");
+        linkJornal.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                 pnlEast.removeAll();
+                 pnlJournal = new JournalPanel();
+                 pnlEast.add(pnlJournal);
+                 pnlEast.repaint();
+                 pnlEast.revalidate();
+            }
+        });
+        Link linkRating = new Link("rating","Рейтинг");
+        linkRating.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                 pnlEast.removeAll();
+                 pnlRating = new RatingPanel();
+                 pnlEast.add(pnlRating);
+                 pnlEast.repaint();
+                 pnlEast.revalidate();
+            }
+        });
+        pnlWest.add(Box.createVerticalStrut(10));
         pnlWest.add(linkDisc);
         pnlWest.add(linkTask);
         pnlWest.add(linkJornal);
@@ -67,10 +113,11 @@ public class MainForm extends JFrame{
         pnlWest.add(Box.createGlue());
         panel.add(pnlWest, BorderLayout.WEST);
         
-        JPanel pnlEast = new JPanel();
-        DisciplinePanel pnlDiscipline = new DisciplinePanel();
+        
+        pnlDiscipline = new DisciplinePanel();
         pnlEast.add(pnlDiscipline);
-        //pnlEast.setPreferredSize(new Dimension(1000,700));
+
+        
         panel.add(pnlEast, BorderLayout.EAST);
         
         
@@ -81,13 +128,5 @@ public class MainForm extends JFrame{
         this.setVisible(true);
         this.setLocationRelativeTo(null);
     }
-
-    private void generateLinks() {
-        //Object[] captionLinks = new Object[]{""};
-        
-    }
-    
-    
-    
-    
+      
 }
